@@ -2,12 +2,13 @@
     <div class="container-fluid">
         <div class="row min-vh-100">
             <div class="col subreddit-contents">
-                <PostOverview v-for="post in sub.posts" :key="post.id"
+                <PostOverview v-for="post in posts" :key="post.id"
+                    :post="post"
                     :id="post.id"
                     :title="post.title"
                     :content="post.content"
                     :url="post.url"
-                    :image-url="post.imageUrl"
+                    :image-url="post.thumbnail"
                     :date="post.date"
                     :subreddit="post.subreddit"
                     :comment-count="post.commentCount"
@@ -46,7 +47,7 @@ export default {
     },
     props: ["subreddit"],
     created () {
-        console.log(this);
+        console.log(this.$store.getters.flavor);
         this.changeSubreddit(this.$route.params);
     },
     watch: {
@@ -58,11 +59,18 @@ export default {
         changeSubreddit(params) {
             console.log("Changed to Subreddit: " + this.subreddit);
             Event.$emit("changedSubreddit", this.subreddit);
+
+            this.$store.commit("setCurrentSub", this.subreddit);
+
+            this.$store.dispatch("getSubredditData");
         }
     },
     computed: {
         sub: function() {
             return userData.getSubredditInfo(this.subreddit);
+        },
+        posts () {
+            return this.$store.state.posts;
         }
     },
     data () {

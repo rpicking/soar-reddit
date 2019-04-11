@@ -5,7 +5,7 @@
             <p class="card-text text-left">
                 {{ content }}
             </p>
-            <div class="img-container" v-if="imageUrl">
+            <div class="img-container" v-if="!['default', 'self'].includes(imageUrl)">
                 <img class="" :src="imageUrl">
             </div>
         </div>

@@ -1,14 +1,18 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import App from './App.vue'
 import router from './router'
+import { store } from './store/store'
 
 Vue.config.productionTip = false
 
 window.Event = new Vue();
+
+Vue.use(Vuex)
 
 export const userData = {
     subreddits: [{
@@ -113,6 +117,7 @@ export const userData = {
 };
 
 new Vue({
-  router,
-  render: h => h(App)
+    store,
+    router,
+    render: h => h(App)
 }).$mount('#app')
