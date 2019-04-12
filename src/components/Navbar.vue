@@ -40,8 +40,8 @@
                     <router-link class="dropdown-item" to="/r/original">Original</router-link>
                     <div class="dropdown-divider"></div>                    
                     <h6 class="dropdown-header">SUBREDDITS</h6>
-                    <router-link class="dropdown-item" v-for="value in subreddits" :key="value.name"
-                        :to="'/r/' + value.name">{{value.name}}</router-link>
+                    <router-link class="dropdown-item" v-for="value in subreddits" :key="value.display_name"
+                        :to="'/r/' + value.display_name">{{value.display_name}}</router-link>
                 </div>
             </li>
         </ul>
@@ -68,8 +68,7 @@ export default {
     data: function() {
         return {
             searchText: "",
-            currentView: "Popular",
-            subreddits: userData.subreddits
+            currentView: "Popular"
         }
     },
     methods: {
@@ -82,6 +81,11 @@ export default {
         Event.$on("changedSubreddit", (subreddit) => {
             this.currentView = subreddit;
         });
+    },
+    computed: {
+        subreddits () {
+            return this.$store.state.subreddits;
+        }
     }
 };
 </script>

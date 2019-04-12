@@ -10,7 +10,7 @@
                     :url="post.url"
                     :image-url="post.thumbnail"
                     :date="post.date"
-                    :subreddit="post.subreddit"
+                    :subreddit="post.subreddit_name_prefixed"
                     :comment-count="post.commentCount"
                     :upvote-count="post.upvoteCount">
                 </PostOverview>
@@ -47,7 +47,6 @@ export default {
     },
     props: ["subreddit"],
     created () {
-        console.log(this.$store.getters.flavor);
         this.changeSubreddit(this.$route.params);
     },
     watch: {
@@ -56,25 +55,27 @@ export default {
         }
     },
     methods: {
-        changeSubreddit(params) {
+        async changeSubreddit(params) {
+            let _this = this;
             console.log("Changed to Subreddit: " + this.subreddit);
             Event.$emit("changedSubreddit", this.subreddit);
 
             this.$store.commit("setCurrentSub", this.subreddit);
 
-            this.$store.dispatch("getSubredditData");
+            this.posts = []
+            this.$store.state.current_sub.getHot().then(submissions => {
+                this.posts = submissions;
+            });
         }
     },
     computed: {
         sub: function() {
             return userData.getSubredditInfo(this.subreddit);
         },
-        posts () {
-            return this.$store.state.posts;
-        }
     },
     data () {
         return {
+            posts: []
         }
     },
 }

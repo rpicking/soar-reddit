@@ -13,6 +13,10 @@ Vue.config.productionTip = false
 window.Event = new Vue();
 
 Vue.use(Vuex)
+import dotenv from 'dotenv'
+dotenv.config()
+
+store.dispatch("updateSubscribedSubredditList");
 
 export const userData = {
     subreddits: [{
