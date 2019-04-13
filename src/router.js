@@ -36,10 +36,6 @@ export default new Router({
             path: "/r/:subreddit/comments/:id",
             name: "comments",
             component: Post,
-            props: (route) => ({
-                subreddit: route.params.subreddit,
-                id: route.params.id
-            })
         },
   ]
 })

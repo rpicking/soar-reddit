@@ -12,9 +12,10 @@ const reddit = new Snoowrap({
     userAgent: 'my-webapp',
     clientId: process.env.VUE_APP_CLIENT_ID,
     clientSecret: process.env.VUE_APP_CLIENT_SECRET,
-    username: process.env.VUE_APP_REDDIT_USER,
-    password: process.env.VUE_APP_REDDIT_PASS
+    // accessToken: process.env.VUE_APP_ACCESS_TOKEN,
+    refreshToken: process.env.VUE_APP_REFRESH_TOKEN,
 });
+reddit.config({ warnings: false, continueAfterRatelimitError: true });
 
 export const store = new Vuex.Store({
     state: {
@@ -23,8 +24,8 @@ export const store = new Vuex.Store({
         sortMethod: "hot",
         pageLimit: 25,
         subreddits: [],
-        posts: [],
-        current_sub: null
+        current_sub: {},
+        submissions: []
     },
     mutations: {
         setCurrentSub(state, subreddit_name) {
@@ -35,15 +36,19 @@ export const store = new Vuex.Store({
                 }
             }
 
-            state.current_sub = reddit.getSubreddit(subreddit_name);
+            reddit.getSubreddit(subreddit_name).fetch().then(sub => {
+                state.current_sub = sub;
+                sub.getHot().then(submissions => {
+                    // console.log(submissions);
+                    state.submissions = submissions;
+                });
+            });
         },
         setSubscribedSubs(state, subs) {
             state.subreddits = subs;
         }
     },
     getters: {
-        flavor: state => state.flavor,
-        client: state => state.client,
         current_sub: state => state.current_sub
     },
     actions: {
@@ -51,12 +56,10 @@ export const store = new Vuex.Store({
             if (state.current_sub === null) {
                 commit("setCurrentSub", sub);
             }
-            state.posts = []
-            
         },
         updateSubscribedSubredditList: function(context) {
             context.state.subreddits = [];
-            reddit.getSubscriptions().then(subs => {
+            context.state.reddit.getSubscriptions().then(subs => {
                 context.commit("setSubscribedSubs", subs);
             });
         }

@@ -2,21 +2,19 @@
     <div class="col-sm-3 px-1 bg-dark">
         <div class="py-2 sticky-top flex-grow-1">
             <div class="nav flex-sm-column">
-                <p class="my-2">r/{{ name }}</p>
+                <p class="my-2">{{ subreddit.display_name_prefixed }}</p>
                 <div class="row my-2">
                     <div class="col">
-                        <span>{{ memberCount }}</span>
+                        <span>{{ subscribers }}</span>
                         <p>Members</p>
                     </div>
                     <div style="width: 1px; background: white;"></div>
                     <div class="col">
-                        <span>{{ onlineCount }}</span>
+                        <span>{{ onlineMembers }}</span>
                         <p>Online</p>
                     </div>
                 </div>
-                <div class="my-2">
-                    <p>{{ description }}</p>
-                </div>
+                <div class="my-2 description" v-html="subreddit.description_html"></div>
             </div>
         </div>
     </div>
@@ -25,11 +23,16 @@
 <script>
 export default {
     name: "Sidebar",
-    props: {
-        name: String,
-        description: String,
-        memberCount: Number,
-        onlineCount: Number
+    computed: {
+        subreddit () {
+            return this.$store.state.current_sub;
+        },
+        subscribers () {
+            return this.subreddit.subscribers.toLocaleString('en');
+        },
+        onlineMembers () {
+            return this.subreddit.active_user_count.toLocaleString('en');
+        }
     }
 }
 </script>
@@ -37,6 +40,10 @@ export default {
 <style scoped>
     div, p {
         color: white;
+    }
+    .description {
+        word-wrap: break;
+        padding: 5px;
     }
 </style>
 

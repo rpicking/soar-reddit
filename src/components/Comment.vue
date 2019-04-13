@@ -38,7 +38,6 @@ export default {
     color: rgb(100, 109, 115);
     margin: 0 10px;
     font-size: 1.2em;
-    cursor: pointer;
 }
 
 .comment-info {

@@ -1,29 +1,16 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid main-content">
         <div class="row min-vh-100">
             <div class="col subreddit-contents">
                 <PostOverview v-for="post in posts" :key="post.id"
-                    :post="post"
-                    :id="post.id"
-                    :title="post.title"
-                    :content="post.content"
-                    :url="post.url"
-                    :image-url="post.thumbnail"
-                    :date="post.date"
-                    :subreddit="post.subreddit_name_prefixed"
-                    :comment-count="post.commentCount"
-                    :upvote-count="post.upvoteCount">
+                    :post="post">
                 </PostOverview>
-                <div v-if="sub.posts.length === 0">
+                <div v-if="posts.length === 0">
                     No Posts available
                 </div>
             </div>
             
-            <Sidebar 
-                :name="$route.params.subreddit"
-                description="description for the subreddit here"
-                :memberCount="100"
-                :onlineCount="200"></Sidebar>
+            <Sidebar></Sidebar>
         </div>
     </div>
 
@@ -38,7 +25,6 @@
 <script>
 import Sidebar from "@/components/Sidebar";
 import PostOverview from "@/components/PostOverview";
-import { userData } from "../main";
 
 export default {
     name: "Subreddit",    
@@ -60,22 +46,19 @@ export default {
             console.log("Changed to Subreddit: " + this.subreddit);
             Event.$emit("changedSubreddit", this.subreddit);
 
-            this.$store.commit("setCurrentSub", this.subreddit);
-
-            this.posts = []
-            this.$store.state.current_sub.getHot().then(submissions => {
-                this.posts = submissions;
-            });
+            this.$store.commit("setCurrentSub", this.subreddit);            
         }
     },
     computed: {
-        sub: function() {
-            return userData.getSubredditInfo(this.subreddit);
+        cur_subreddit () {
+            return this.$store.state.current_sub;
         },
+        posts () {
+            return this.$store.state.submissions;
+        }
     },
     data () {
         return {
-            posts: []
         }
     },
 }
@@ -84,5 +67,8 @@ export default {
 <style>
     .subreddit-contents {
         padding-top: 20px;
+    }
+    body {
+        overflow-x: hidden;
     }
 </style>
