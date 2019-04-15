@@ -4,7 +4,7 @@
         <div class="media">
             <div class="vote-container d-flex flex-column">
                 <button class="btn vote-button" @click="upVoteSubmission"><font-awesome-icon icon="chevron-up" size="lg"/></button>
-                <span>{{post.score}}</span>
+                <span>{{score}}</span>
                 <button class="btn vote-button" @click="downVoteSubmission"><font-awesome-icon icon="chevron-down" size="lg"/></button>
             </div>
             <div class="img-container" >
@@ -59,6 +59,9 @@ export default {
             let milliseconds = Date.now() - commentDate.getTime();
             return moment.duration(milliseconds).humanize() + " ago";
         },
+        score () {
+            return this.post.score.toLocaleString('en');
+        }
     }
 }
 </script>
